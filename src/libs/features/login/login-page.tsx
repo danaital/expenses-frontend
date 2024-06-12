@@ -5,8 +5,7 @@ import styled from 'styled-components';
 import { TextField, Button , IconButton, InputAdornment } from '@mui/material';
 import axios from 'axios';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const LoginPageContainer = styled.div`
     display: flex;
@@ -41,6 +40,8 @@ export const LoginPage: FC = () => {
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
+
+    // TODO: protection against entering url directly, block access to register page if user is already logged in
     // TODO: Add translations
     const loginTitle = "Expense Tracker Login";
     const usernameLabel = "Username";
@@ -52,13 +53,14 @@ export const LoginPage: FC = () => {
     const loginSuccess = "Login successful";
     const registerLinkLabel = "Don't have an account? Register here";
 
+    const navigate = useNavigate();
     const handleSubmit = async (values: { username: string; password: string }) => {
         try {
             // TODO: move call to API + atom. 
             const response = await axios.post('http://localhost:3001/api/auth/login', values);
             console.log(response);
+            navigate('/home')
             // TODO Handle successful login via toast notification
-            // TODO Redirect to home page
         } catch (error) {
             // TODO Handle login error
         }
@@ -86,27 +88,25 @@ export const LoginPage: FC = () => {
                 <TextField
                     id="username"
                     name="username"
-                    label={usernameLabel}
+                    label={usernameLabel + " *"}
                     value={formik.values.username}
                     onChange={formik.handleChange}
                     error={formik.touched.username && Boolean(formik.errors.username)}
                     helperText={(formik.touched.username && formik.errors.username) || ' '}
                     fullWidth
-                    required
                     style={{ width: '85%' }}
                 />
                 <div style={{ marginBottom: 20 }} />
                 <TextField
                     id="password"
                     name="password"
-                    label={passwordLabel}
+                    label={passwordLabel + " *"}
                     type={showPassword ? 'text' : 'password'}
                     value={formik.values.password}
                     onChange={formik.handleChange}
                     error={formik.touched.password && Boolean(formik.errors.password)}
                     helperText={(formik.touched.password && formik.errors.password) || ' '}
                     fullWidth
-                    required
                     style={{ width: '85%' }}
                     InputProps={{
                         endAdornment: (

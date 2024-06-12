@@ -51,6 +51,7 @@ export const RegisterPage: FC = () => {
         setShowConfirmPassword(!showConfirmPassword);
     };
 
+    // TODO: protection against entering url directly, block access to register page if user is already logged in
     // TODO: Add translations
     const registerTitle = "Expense Tracker Registration";
     const usernameLabel = "Username";
@@ -115,6 +116,8 @@ export const RegisterPage: FC = () => {
         validationSchema: validationSchema,
         onSubmit: handleSubmit,
     });
+    // TODO: Add create reusable component for form fields
+    // TODO: move colors to theme
 
     return (
         <RegisterPageContainer>
@@ -123,37 +126,34 @@ export const RegisterPage: FC = () => {
                 <FormField
                     id="username"
                     name="username"
-                    label={usernameLabel}
+                    label={usernameLabel + " *"}
                     value={formik.values.username}
                     onChange={formik.handleChange}
                     error={formik.touched.username && Boolean(formik.errors.username)}
                     helperText={(formik.touched.username && formik.errors.username) || ' '}
                     fullWidth
-                    required
                 />
                 <div style={{ marginBottom: 20 }} />
                 <FormField
                     id="email"
                     name="email"
-                    label={emailLabel}
+                    label={emailLabel + " *"}
                     value={formik.values.email}
                     onChange={formik.handleChange}
                     error={formik.touched.email && Boolean(formik.errors.email)}
                     helperText={(formik.touched.email && formik.errors.email) || ' '}
                     fullWidth
-                    required
                 />
                 <div style={{ marginBottom: 20 }} />
                 <FormField
                     id="firstName"
                     name="firstName"
-                    label={firstNameLabel}
+                    label={firstNameLabel + " *"}
                     value={formik.values.firstName}
                     onChange={formik.handleChange}
                     error={formik.touched.firstName && Boolean(formik.errors.firstName)}
                     helperText={(formik.touched.firstName && formik.errors.firstName) || ' '}
                     fullWidth
-                    required
                 />
                 <div style={{ marginBottom: 20 }} />
                 <FormField
@@ -170,26 +170,24 @@ export const RegisterPage: FC = () => {
                 <FormField
                     id="lastName"
                     name="lastName"
-                    label={lastNameLabel}
+                    label={lastNameLabel + " *"}
                     value={formik.values.lastName}
                     onChange={formik.handleChange}
                     error={formik.touched.lastName && Boolean(formik.errors.lastName)}
                     helperText={(formik.touched.lastName && formik.errors.lastName) || ' '}
                     fullWidth
-                    required
                 />
                 <div style={{ marginBottom: 20 }} />
                 <FormField
                     id="password"
                     name="password"
-                    label={passwordLabel}
+                    label={passwordLabel + " *"}
                     type={showPassword ? 'text' : 'password'}
                     value={formik.values.password}
                     onChange={formik.handleChange}
                     error={formik.touched.password && Boolean(formik.errors.password)}
                     helperText={(formik.touched.password && formik.errors.password) || ' '}
                     fullWidth
-                    required
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end">
@@ -208,14 +206,13 @@ export const RegisterPage: FC = () => {
                 <FormField
                     id="confirmPassword"
                     name="confirmPassword"
-                    label={confirmPasswordLabel}
+                    label={confirmPasswordLabel + " *"}
                     type= {showConfirmPassword ? "text" : "password"}
                     value={formik.values.confirmPassword}
                     onChange={formik.handleChange}
                     error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
                     helperText={(formik.touched.confirmPassword && formik.errors.confirmPassword) || ' '}
                     fullWidth
-                    required
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end">
