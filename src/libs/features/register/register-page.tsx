@@ -50,6 +50,7 @@ export const RegisterPage: FC = () => {
         setShowConfirmPassword(!showConfirmPassword);
     };
 
+    // TODO: Add translations
     const registerTitle = "Expense Tracker Registration";
     const usernameLabel = "Username";
     const emailLabel = "Email";
@@ -64,6 +65,7 @@ export const RegisterPage: FC = () => {
     const firstNameRequiredError = "First name is required";
     const lastNameRequiredError = "Last name is required";
     const passwordRequiredError = "Password is required";
+    const middleNameLabel = "Middle Name";
     const confirmPasswordRequiredError = "Please confirm your password";
     const passwordMatchError = "Passwords must match";
     const registerError = "Registration failed. Please try again.";
@@ -75,10 +77,11 @@ export const RegisterPage: FC = () => {
         email: string;
         firstName: string;
         lastName: string;
+        middleName?: string;
         password: string;
     }) => {
         try {
-            const response = await axios.post('http://localhost:3001/api/auth/register', values);
+            const response = await axios.post('http://localhost:3001/api/register/newuser', values);
             console.log(response);
         } catch (error) {
             console.error(error);
@@ -89,6 +92,7 @@ export const RegisterPage: FC = () => {
         username: yup.string().required(usernameRequiredError),
         email: yup.string().email(emailInvalidError).required(emailRequiredError),
         firstName: yup.string().required(firstNameRequiredError),
+        middleName: yup.string(),
         lastName: yup.string().required(lastNameRequiredError),
         password: yup.string().required(passwordRequiredError),
         confirmPassword: yup.string().oneOf([yup.ref('password'), undefined, ""], passwordMatchError),
@@ -99,6 +103,7 @@ export const RegisterPage: FC = () => {
             username: '',
             email: '',
             firstName: '',
+            middleName: '',
             lastName: '',
             password: '',
             confirmPassword: '',
@@ -145,6 +150,17 @@ export const RegisterPage: FC = () => {
                     helperText={(formik.touched.firstName && formik.errors.firstName) || ' '}
                     fullWidth
                     required
+                />
+                <div style={{ marginBottom: 20 }} />
+                <FormField
+                    id="middleName"
+                    name="middleName"
+                    label={middleNameLabel}
+                    value={formik.values.middleName}
+                    onChange={formik.handleChange}
+                    error={formik.touched.middleName && Boolean(formik.errors.middleName)}
+                    helperText={(formik.touched.middleName && formik.errors.middleName) || ' '}
+                    fullWidth
                 />
                 <div style={{ marginBottom: 20 }} />
                 <FormField
