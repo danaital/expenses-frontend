@@ -55,8 +55,8 @@ export const LoginPage: FC = () => {
         try {
             const response = await axios.post('http://localhost:3001/api/auth/login', values);
             console.log(response);
-
-            // TODO Handle successful login
+            // TODO Handle successful login via toast notification
+            // TODO Redirect to home page
         } catch (error) {
             // TODO Handle login error
         }
