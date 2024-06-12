@@ -4,9 +4,11 @@ import * as yup from 'yup';
 import styled from 'styled-components';
 import { TextField, Button } from '@mui/material';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const LoginPageContainer = styled.div`
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
@@ -17,10 +19,17 @@ const LoginForm = styled.form`
     background-color: #ffffff; 
     display: flex;
     flex-direction: column;
+    align-items: center; 
     width: 300px;
     padding: 20px;
     border: 1px solid black;
     border-radius: 4px;
+`;
+
+const RegisterLink = styled.div`
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
 `;
 
 export const LoginPage: FC = () => {
@@ -34,14 +43,9 @@ export const LoginPage: FC = () => {
     const loginButtonLabel = "Login";
     const usernameRequiredError = "Username is required";
     const passwordRequiredError = "Password is required";
-    
-    const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setUsername(event.target.value);
-    };
-
-    const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setPassword(event.target.value);
-    };
+    const loginError = "Invalid username or password";
+    const loginSuccess = "Login successful";
+    const registerLinkLabel = "Don't have an account? Register here";
 
     const handleSubmit = async (values: { username: string; password: string }) => {
         try {
@@ -80,6 +84,9 @@ export const LoginPage: FC = () => {
                     onChange={formik.handleChange}
                     error={formik.touched.username && Boolean(formik.errors.username)}
                     helperText={(formik.touched.username && formik.errors.username) || ' '}
+                    fullWidth
+                    style={{ width: '85%' }}
+
                 />
                 <div style={{ marginBottom: 20 }} />
                 <TextField
@@ -91,12 +98,19 @@ export const LoginPage: FC = () => {
                     onChange={formik.handleChange}
                     error={formik.touched.password && Boolean(formik.errors.password)}
                     helperText={(formik.touched.password && formik.errors.password) || ' '}
+                    fullWidth
+                    style={{ width: '85%' }}
                 />
                 <div style={{ marginBottom: 20 }} />
-                <Button type="submit" variant="contained" color="primary">
+                <Button type="submit" variant="contained" color="primary" style={{ width: "85%" }}>
                     {loginButtonLabel}
                 </Button>
             </LoginForm>
+            <RegisterLink>
+                <Link to="/register" style={{ textDecoration: 'none', color: '007bff' }}>
+                   {registerLinkLabel}
+                </Link>
+            </RegisterLink>
         </LoginPageContainer>
     );
 };

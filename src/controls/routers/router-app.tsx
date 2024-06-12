@@ -9,6 +9,7 @@ export const RouterApp = () => {
     <Routes>
       <Route path="/" element={<LoginPage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<LoginPage />} />
     </Routes>
   );
 }
