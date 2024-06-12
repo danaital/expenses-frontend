@@ -32,6 +32,7 @@ const RegisterLink = styled.div`
     text-align: center;
     font-family: Arial, sans-serif;
     font-size: 14px;
+    margin-top: 20px;
 `;
 
 export const LoginPage: FC = () => {
