@@ -1,0 +1,14 @@
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { LoginPage } from '../../libs/features/login/login-page';
+// import HomePage from '../pages/HomePage';
+// Import other page components
+
+export const RouterApp = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<LoginPage />} />
+      <Route path="/login" element={<LoginPage />} />
+    </Routes>
+  );
+}

@@ -46,6 +46,8 @@ export const LoginPage: FC = () => {
     const handleSubmit = async (values: { username: string; password: string }) => {
         try {
             const response = await axios.post('http://localhost:3001/api/auth/login', values);
+            console.log(response);
+
             // TODO Handle successful login
         } catch (error) {
             // TODO Handle login error
