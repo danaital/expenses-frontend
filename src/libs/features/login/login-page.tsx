@@ -90,6 +90,7 @@ export const LoginPage: FC = () => {
                     error={formik.touched.username && Boolean(formik.errors.username)}
                     helperText={(formik.touched.username && formik.errors.username) || ' '}
                     fullWidth
+                    required
                     style={{ width: '85%' }}
                 />
                 <div style={{ marginBottom: 20 }} />
@@ -103,6 +104,7 @@ export const LoginPage: FC = () => {
                     error={formik.touched.password && Boolean(formik.errors.password)}
                     helperText={(formik.touched.password && formik.errors.password) || ' '}
                     fullWidth
+                    required
                     style={{ width: '85%' }}
                     InputProps={{
                         endAdornment: (
