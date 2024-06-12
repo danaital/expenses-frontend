@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { TextField, Button, IconButton, InputAdornment } from '@mui/material';
 import axios from 'axios';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const RegisterPageContainer = styled.div`
     display: flex;
@@ -43,6 +43,7 @@ export const RegisterPage: FC = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+    const navigate = useNavigate();
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
@@ -83,7 +84,10 @@ export const RegisterPage: FC = () => {
         try {
             const response = await axios.post('http://localhost:3001/api/register/newuser', values);
             console.log(response);
+            // TODO Handle successful registration via toast notification
+            navigate('/login');
         } catch (error) {
+            // TODO Handle registration error
             console.error(error);
         }
     };
