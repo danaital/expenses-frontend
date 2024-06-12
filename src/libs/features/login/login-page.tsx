@@ -2,8 +2,10 @@ import React, { useState, FC } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import styled from 'styled-components';
-import { TextField, Button } from '@mui/material';
+import { TextField, Button , IconButton, InputAdornment } from '@mui/material';
 import axios from 'axios';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+
 import { Link } from 'react-router-dom';
 
 const LoginPageContainer = styled.div`
@@ -33,9 +35,11 @@ const RegisterLink = styled.div`
 `;
 
 export const LoginPage: FC = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
     // TODO: Add translations
     const loginTitle = "Expense Tracker Login";
     const usernameLabel = "Username";
@@ -72,6 +76,7 @@ export const LoginPage: FC = () => {
         onSubmit: handleSubmit,
     });
 
+    // TODO: Add create reusable component for form fields
     return (
         <LoginPageContainer>
             <LoginForm onSubmit={formik.handleSubmit}>
@@ -86,20 +91,32 @@ export const LoginPage: FC = () => {
                     helperText={(formik.touched.username && formik.errors.username) || ' '}
                     fullWidth
                     style={{ width: '85%' }}
-
                 />
                 <div style={{ marginBottom: 20 }} />
                 <TextField
                     id="password"
                     name="password"
                     label={passwordLabel}
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     value={formik.values.password}
                     onChange={formik.handleChange}
                     error={formik.touched.password && Boolean(formik.errors.password)}
                     helperText={(formik.touched.password && formik.errors.password) || ' '}
                     fullWidth
                     style={{ width: '85%' }}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="toggle-password-visibility"
+                                    onClick={togglePasswordVisibility}
+                                    edge="end"
+                                >
+                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                            </InputAdornment>
+                        )
+                    }}
                 />
                 <div style={{ marginBottom: 20 }} />
                 <Button type="submit" variant="contained" color="primary" style={{ width: "85%" }}>
