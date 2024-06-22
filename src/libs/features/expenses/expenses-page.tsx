@@ -6,8 +6,10 @@ import { TextField, Button, Drawer, IconButton, Tooltip, Dialog, DialogTitle, Di
 import { ArrowDownward as ArrowDownwardIcon, ArrowUpward as ArrowUpwardIcon, Edit as EditIcon } from '@mui/icons-material';
 import { Formik, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-// TODO: Mobile version
+//TODO: Mobile version
+//TODO: Add tests to all components
 //TODO: Add move to seperate file
+//TODO: Add access token to API calls
 interface Expense {
   id: number;
   userId: number;
