@@ -6,7 +6,7 @@ import { TextField, Button, Drawer, IconButton, Tooltip, Dialog, DialogTitle, Di
 import { ArrowDownward as ArrowDownwardIcon, ArrowUpward as ArrowUpwardIcon, Edit as EditIcon } from '@mui/icons-material';
 import { Formik, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-
+// TODO: Mobile version
 //TODO: Add move to seperate file
 interface Expense {
   id: number;
