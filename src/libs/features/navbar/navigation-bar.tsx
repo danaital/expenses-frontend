@@ -27,7 +27,7 @@ const IconContainer = styled.div`
 `;
 
 
-export const VerticalNavBar: FC = ({ }) => {
+export const VerticalNavBar: FC = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const location = useLocation();
   const navigate = useNavigate();

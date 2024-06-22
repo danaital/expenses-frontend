@@ -21,6 +21,7 @@ const WelcomeMessage = styled.h2`
 `;
 
 export const HomePage: FC = () => {
+  // TODO: Add translations
   const welcomeMessageText = "Welcome to the Expense Tracker App!";
   const startMessageText = "To get started, navigate through the options in the sidebar.";
 
