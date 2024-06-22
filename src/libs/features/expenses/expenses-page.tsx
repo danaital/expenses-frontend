@@ -2,8 +2,8 @@ import React, { useEffect, useState, FC } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { VerticalNavBar } from '../navbar/navigation-bar';
-import { TextField, Button, Drawer, IconButton } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
+import { TextField, Button, Drawer, IconButton, Tooltip } from '@mui/material';
+import { ArrowDownward as ArrowDownwardIcon, ArrowUpward as ArrowUpwardIcon, Edit as EditIcon } from '@mui/icons-material';
 
 interface Expense {
   id: number;
@@ -47,7 +47,7 @@ const ExpensesList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  max-height: 80vh; /* Adjusted height for scrolling */
+  max-height: 65vh; /* Adjusted height for scrolling */
   overflow-y: auto;
   padding-right: 10px; /* Add some padding for better appearance with the scrollbar */
 `;
@@ -112,6 +112,9 @@ const startDateLabelText = "Start Date";
 const endDateLabelText = "End Date";
 const expenseTypeIdLabelText = "Expense Type ID";
 const editExpenseText = "Edit Expense";
+const saveChangesText = "Save Changes";
+const sortByIdAscText = "Sort by ID (Ascending)";
+const sortByIdDescText = "Sort by ID (Descending)";
 
 export const ExpensesPage: FC = () => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -126,6 +129,7 @@ export const ExpensesPage: FC = () => {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   useEffect(() => {
     axios.get<Expense[]>('http://localhost:3001/api/expenses/getAllByUser/1')
@@ -142,7 +146,19 @@ export const ExpensesPage: FC = () => {
     setFilter(prevFilter => ({ ...prevFilter, [name]: value }));
   };
 
-  const filteredExpenses = expenses.filter(expense => {
+  const handleSortToggle = () => {
+    setSortOrder(prevSortOrder => (prevSortOrder === 'asc' ? 'desc' : 'asc'));
+  };
+
+  const sortedExpenses = [...expenses].sort((a, b) => {
+    if (sortOrder === 'asc') {
+      return a.id - b.id;
+    } else {
+      return b.id - a.id;
+    }
+  });
+
+  const filteredExpenses = sortedExpenses.filter(expense => {
     const expenseDate = new Date(expense.expenseDate);
     const startDate = filter.startDate ? new Date(filter.startDate) : null;
     const endDate = filter.endDate ? new Date(filter.endDate) : null;
@@ -158,12 +174,11 @@ export const ExpensesPage: FC = () => {
   });
 
   const handleAddExpense = () => {
-    // Logic to add new expense
+    // TODO: add Logic to add new expense 
     console.log('Add new expense button clicked');
   };
 
   const handleEditExpense = (expense: Expense) => {
-    console.log('Edit expense clicked', expense);
     setSelectedExpense(expense);
     setDrawerOpen(true);
   };
@@ -207,6 +222,11 @@ export const ExpensesPage: FC = () => {
         <Header>
           <h1>{headerTitleText}</h1>
           <p>{headerDescriptionText}</p>
+          <Tooltip title={sortOrder === 'asc' ? sortByIdAscText : sortByIdDescText}>
+            <IconButton onClick={handleSortToggle}>
+              {sortOrder === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
+            </IconButton>
+          </Tooltip>
         </Header>
         <FilterHeader>
           <FilterField>
@@ -222,7 +242,7 @@ export const ExpensesPage: FC = () => {
               label={minAmountLabelText}
               variant="outlined"
               type="number"
-              name="minAmount"
+              name="minAmount" // TODO: ensure value is a non negative number & smaller than maxAmount
               value={filter.minAmount}
               onChange={handleFilterChange}
             />
@@ -230,7 +250,7 @@ export const ExpensesPage: FC = () => {
               label={maxAmountLabelText}
               variant="outlined"
               type="number"
-              name="maxAmount"
+              name="maxAmount" // TODO: ensure value bigger than minAmount (if minAmount is set make the value be minAmount + 1)
               value={filter.maxAmount}
               onChange={handleFilterChange}
             />
@@ -238,7 +258,7 @@ export const ExpensesPage: FC = () => {
               label={startDateLabelText}
               variant="outlined"
               type="date"
-              name="startDate"
+              name="startDate" // TODO: ensure value is smaller than endDate, swtich to date picker
               value={filter.startDate}
               onChange={handleFilterChange}
               InputLabelProps={{
@@ -249,7 +269,7 @@ export const ExpensesPage: FC = () => {
               label={endDateLabelText}
               variant="outlined"
               type="date"
-              name="endDate"
+              name="endDate" // TODO: ensure value is smaller than endDate, swtich to date picker while keeping functionality
               value={filter.endDate}
               onChange={handleFilterChange}
               InputLabelProps={{
@@ -260,21 +280,22 @@ export const ExpensesPage: FC = () => {
               label={expenseTypeIdLabelText}
               variant="outlined"
               type="number"
-              name="expenseTypeId"
+              name="expenseTypeId" // TODO: make it the name of the expense type & colorize according to the type
               value={filter.expenseTypeId}
               onChange={handleFilterChange}
             />
+            {/* TODO: Add filter adding button + react-select menu? + paidTo Filter */}
           </FilterField>
           <AddExpenseButton variant="contained" onClick={handleAddExpense}>{addExpenseButtonText}</AddExpenseButton>
         </FilterHeader>
         <ExpensesList>
-          {filteredExpenses.map(expense => (
+          {filteredExpenses.map(expense => ( // Change size of font of ID
             <ExpenseRow key={expense.id}>
               <ExpenseDetail>
                 <h3>{expense.title}</h3>
                 <p><strong>{idText}</strong> 
                   <IconButton onClick={() => handleEditExpense(expense)}>
-                    {expense.id}
+                    {expense.id} 
                     <EditIcon fontSize="small" />
                   </IconButton>
                 </p>
@@ -291,11 +312,11 @@ export const ExpensesPage: FC = () => {
             </ExpenseRow>
           ))}
         </ExpensesList>
-        <Drawer anchor="right" open={drawerOpen} onClose={handleDrawerClose}>
+        <Drawer anchor="right" open={drawerOpen} onClose={handleDrawerClose}> 
           <DrawerContent>
             <h2>{editExpenseText}</h2>
-            {selectedExpense && (
-              <>
+            {selectedExpense && ( // TODO: Export this to a separate component, add validation via YUP
+              <> 
                 <TextField
                   label={titleLabelText}
                   variant="outlined"
@@ -329,7 +350,7 @@ export const ExpensesPage: FC = () => {
                   variant="outlined"
                   type="date"
                   name="expenseDate"
-                  value={new Date(selectedExpense.expenseDate).toISOString().split('T')[0]}
+                  value={(new Date(selectedExpense.expenseDate)).toISOString().split('T')[0]}
                   onChange={handleExpenseChange}
                   InputLabelProps={{
                     shrink: true,
@@ -357,7 +378,7 @@ export const ExpensesPage: FC = () => {
                   margin="normal"
                 />
                 <Button variant="contained" color="primary" onClick={handleSaveChanges} fullWidth>
-                  Save Changes
+                  {saveChangesText}
                 </Button>
               </>
             )}
