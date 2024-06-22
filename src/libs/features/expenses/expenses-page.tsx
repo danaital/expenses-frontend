@@ -2,7 +2,8 @@ import React, { useEffect, useState, FC } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { VerticalNavBar } from '../navbar/navigation-bar';
-import { TextField, Button } from '@mui/material';
+import { TextField, Button, Drawer, IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 
 interface Expense {
   id: number;
@@ -88,9 +89,15 @@ const AddExpenseButton = styled(Button)`
   }
 `;
 
+const DrawerContent = styled.div`
+  width: 300px;
+  padding: 20px;
+`;
+
 // Text constants
 const headerTitleText = "User Expenses";
 const headerDescriptionText = "Manage your expenses effectively.";
+const idText = "ID:";
 const amountText = "Amount:";
 const descriptionText = "Description:";
 const dateText = "Date:";
@@ -104,6 +111,7 @@ const maxAmountLabelText = "Max Amount";
 const startDateLabelText = "Start Date";
 const endDateLabelText = "End Date";
 const expenseTypeIdLabelText = "Expense Type ID";
+const editExpenseText = "Edit Expense";
 
 export const ExpensesPage: FC = () => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -115,6 +123,9 @@ export const ExpensesPage: FC = () => {
     endDate: '',
     expenseTypeId: '',
   });
+
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
 
   useEffect(() => {
     axios.get<Expense[]>('http://localhost:3001/api/expenses/getAllByUser/1')
@@ -149,6 +160,44 @@ export const ExpensesPage: FC = () => {
   const handleAddExpense = () => {
     // Logic to add new expense
     console.log('Add new expense button clicked');
+  };
+
+  const handleEditExpense = (expense: Expense) => {
+    console.log('Edit expense clicked', expense);
+    setSelectedExpense(expense);
+    setDrawerOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
+    setSelectedExpense(null);
+  };
+
+  const handleExpenseChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (selectedExpense) {
+      const { name, value } = e.target;
+      setSelectedExpense({
+        ...selectedExpense,
+        [name]: value,
+      });
+    }
+  };
+
+  const handleSaveChanges = async () => {
+    if (selectedExpense) {
+      try {
+        await axios.patch(`http://localhost:3001/api/expenses/update/${selectedExpense.id}`, selectedExpense);
+        
+        setExpenses(prevExpenses =>
+          prevExpenses.map(expense => (expense.id === selectedExpense.id ? selectedExpense : expense))
+        );
+
+        setDrawerOpen(false);
+        setSelectedExpense(null);
+      } catch (error) {
+        console.error('There was an error updating the expense!', error);
+      }
+    }
   };
 
   return (
@@ -223,6 +272,12 @@ export const ExpensesPage: FC = () => {
             <ExpenseRow key={expense.id}>
               <ExpenseDetail>
                 <h3>{expense.title}</h3>
+                <p><strong>{idText}</strong> 
+                  <IconButton onClick={() => handleEditExpense(expense)}>
+                    {expense.id}
+                    <EditIcon fontSize="small" />
+                  </IconButton>
+                </p>
                 <p><strong>{amountText}</strong> ${(+expense.amount).toFixed(2)}</p>
               </ExpenseDetail>
               <ExpenseDetail>
@@ -236,6 +291,78 @@ export const ExpensesPage: FC = () => {
             </ExpenseRow>
           ))}
         </ExpensesList>
+        <Drawer anchor="right" open={drawerOpen} onClose={handleDrawerClose}>
+          <DrawerContent>
+            <h2>{editExpenseText}</h2>
+            {selectedExpense && (
+              <>
+                <TextField
+                  label={titleLabelText}
+                  variant="outlined"
+                  name="title"
+                  value={selectedExpense.title}
+                  onChange={handleExpenseChange}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label={amountText}
+                  variant="outlined"
+                  type="number"
+                  name="amount"
+                  value={selectedExpense.amount}
+                  onChange={handleExpenseChange}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label={descriptionText}
+                  variant="outlined"
+                  name="description"
+                  value={selectedExpense.description}
+                  onChange={handleExpenseChange}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label={dateText}
+                  variant="outlined"
+                  type="date"
+                  name="expenseDate"
+                  value={new Date(selectedExpense.expenseDate).toISOString().split('T')[0]}
+                  onChange={handleExpenseChange}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label={paidToText}
+                  variant="outlined"
+                  name="paidTo"
+                  value={selectedExpense.paidTo}
+                  onChange={handleExpenseChange}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label={expenseTypeIdText}
+                  variant="outlined"
+                  type="number"
+                  name="expenseTypeId"
+                  value={selectedExpense.expenseTypeId}
+                  onChange={handleExpenseChange}
+                  fullWidth
+                  margin="normal"
+                />
+                <Button variant="contained" color="primary" onClick={handleSaveChanges} fullWidth>
+                  Save Changes
+                </Button>
+              </>
+            )}
+          </DrawerContent>
+        </Drawer>
       </Content>
     </Container>
   );
