@@ -53,23 +53,11 @@ const ExpenseRow = styled.div`
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 `;
 
-const ExpenseDetail = styled.div`
-  flex: 1;
-  margin: 0 10px;
-  h3 {
-    margin-top: 0;
-  }
-`;
 
 // TODO: add translations to Text constants
 const headerTitleText = "User Expenses";
 const headerDescriptionText = "Manage your expenses effectively.";
-const idText = "ID";
-const dateText = "Date";
-const paidToText = "Paid To";
-const expenseTypeIdText = "Expense Type ID";
-const amountText = "Amount";
-const descriptionText = "Description";
+
 
 const sortByIdAscText = "Sort by ID (Ascending)";
 const sortByIdDescText = "Sort by ID (Descending)";
@@ -249,7 +237,7 @@ export const ExpensesPage: FC = () => {
         <ExpensesList>
           {filteredExpenses.map(expense => ( // TODO: move to a separate component, add delete button (modal), make header with horizontal line, make it 2X3 like grid with same height of every row 
             <ExpenseRow key={expense.id}>
-              <ExpenseCard expense={expense} onEdit={handleEditExpense} />
+              <ExpenseCard expense={expense} onEdit={handleEditExpense}/>
             </ExpenseRow>
           ))}
         </ExpensesList>
