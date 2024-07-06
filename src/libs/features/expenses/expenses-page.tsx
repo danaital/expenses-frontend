@@ -72,7 +72,6 @@ const ExpenseRow = styled.div`
 const ExpenseDetail = styled.div`
   flex: 1;
   margin: 0 10px;
-
   h3 {
     margin-top: 0;
   }
@@ -402,7 +401,7 @@ export const ExpensesPage: FC = () => {
                 <h3>{expense.title}
                 <IconButton onClick={() => handleEditExpense(expense)}>
                     <EditIcon style={{fontSize: "14px"}} />
-                  </IconButton>
+                </IconButton>
                 </h3>
                 <p><strong>{idText+":"}</strong>{expense.id}</p>
                 <p><strong>{amountText+":"}</strong> ${(+expense.amount).toFixed(2)}</p>
