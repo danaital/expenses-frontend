@@ -1,9 +1,9 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { LoginPage } from '../../libs/features/login/login-page';
-import { RegisterPage } from '../../libs/features/register/register-page';
-import { HomePage } from '../../libs/features/home/home-page';
-import { ExpensesPage } from '../../libs/features/expenses/expenses-page';
+import { LoginPage } from '../../libs/features/pages/login/login-page';
+import { RegisterPage } from '../../libs/features/pages/register/register-page';
+import { HomePage } from '../../libs/features/pages/home/home-page';
+import { ExpensesPage } from '../../libs/features/pages/expenses/expenses-page';
 // import HomePage from '../pages/HomePage';
 // Import other page components
 
