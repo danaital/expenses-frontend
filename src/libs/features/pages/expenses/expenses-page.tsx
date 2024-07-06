@@ -229,7 +229,7 @@ export const ExpensesPage: FC = () => {
           <p>{headerDescriptionText}</p>
           <Tooltip title={sortOrder === 'asc' ? sortByIdAscText : sortByIdDescText}>
             <IconButton onClick={handleSortToggle}>
-              {sortOrder === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
+              {sortOrder === 'asc' ? <ArrowUpwardIcon/> : <ArrowDownwardIcon/>}
             </IconButton>
           </Tooltip>
         </Header>
