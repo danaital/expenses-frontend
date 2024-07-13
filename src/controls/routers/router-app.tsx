@@ -4,6 +4,7 @@ import { LoginPage } from '../../libs/features/pages/login/login-page';
 import { RegisterPage } from '../../libs/features/pages/register/register-page';
 import { HomePage } from '../../libs/features/pages/home/home-page';
 import { ExpensesPage } from '../../libs/features/pages/expenses/expenses-page';
+import { ExpenseTypesPage } from '../../libs/features/pages/expense-types/expense-types-page';
 // import HomePage from '../pages/HomePage';
 // Import other page components
 
@@ -15,7 +16,7 @@ export const RouterApp = () => {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/home" element={<HomePage />} />
       <Route path="/expenses" element={<ExpensesPage/>} />
-      <Route path="/expensesTypes" element={<HomePage />} />
+      <Route path="/expensesTypes" element={<ExpenseTypesPage />} />
       <Route path="/profile" element={<HomePage />} />
       <Route path="/reports" element={<HomePage />} />
     </Routes>

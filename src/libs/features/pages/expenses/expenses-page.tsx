@@ -96,11 +96,10 @@ export const ExpensesPage: FC = () => {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [isEditMode, setIsEditMode] = useState(false);
 
-  // move to a custom API
+  // TODO: move to a custom API
   useEffect(() => {
     axios.get<Expense[]>('http://localhost:3001/api/expenses/getAllByUser/1') // TODO: Change HardCoded value assuming userId 1 for the example, you might want to change this as per your needs + move to an atom and API call
       .then(response => {
-        console.log("response.data:",response.data);
         setExpenses(response.data);
       })
       .catch(error => {
@@ -236,8 +235,8 @@ export const ExpensesPage: FC = () => {
         </Header>
         <ExpensesFilterBar filter={filter} onFilterChange={handleFilterChange} onAddExpense={handleAddExpense}/>
         <ExpensesList>
-          {filteredExpenses.map(expense => ( // TODO: move to a separate component, add delete button (modal), make header with horizontal line, make it 2X3 like grid with same height of every row 
-            <ExpenseRow key={expense.id}>
+          {filteredExpenses.map((expense,index) => ( // TODO: move to a separate component, add delete button (modal), make header with horizontal line, make it 2X3 like grid with same height of every row 
+            <ExpenseRow key={index+1}>
               <ExpenseCard expense={expense} onEdit={handleEditExpense}/>
             </ExpenseRow>
           ))}
