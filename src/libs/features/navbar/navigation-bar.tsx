@@ -8,7 +8,7 @@ import { ProfileMenu } from './profile-menu';
 const NavContainer = styled.div`
   width: 80px;
   background-color: #333;
-  height: 100vh;
+  height: 110vh;
   padding-top: 20px;
 `;
 
