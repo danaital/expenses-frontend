@@ -100,6 +100,7 @@ export const ExpensesPage: FC = () => {
   useEffect(() => {
     axios.get<Expense[]>('http://localhost:3001/api/expenses/getAllByUser/1') // TODO: Change HardCoded value assuming userId 1 for the example, you might want to change this as per your needs + move to an atom and API call
       .then(response => {
+        console.log("response.data:",response.data);
         setExpenses(response.data);
       })
       .catch(error => {
