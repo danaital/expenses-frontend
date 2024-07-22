@@ -3,17 +3,20 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { VerticalNavBar } from '../../navbar/navigation-bar';
 import { IconButton, Tooltip  } from '@mui/material';
-import { ArrowDownward as ArrowDownwardIcon, ArrowUpward as ArrowUpwardIcon, Edit as EditIcon } from '@mui/icons-material';
+import { ArrowDownward as ArrowDownwardIcon, ArrowUpward as ArrowUpwardIcon } from '@mui/icons-material';
 import { UnsavedChangesModal } from '../../../common/modals/unsaved-changes.modal';
 import { ExpenseEditDrawer } from 'libs/forms/expenses-edit.drawer';
 import { ExpensesFilterBar } from 'libs/filter-headers/expenses/expenses.filter-header';
 import { Expense } from '../../../../shared/dtos/expense-dto';
 import { ExpenseCard } from 'libs/common/cards/expense-card/expense-card';
+import { MultiValue } from 'react-select';
+import { ExpenseType } from '@shared/dtos/expense-type-dto';
+import e from 'express';
+
 //TODO: Mobile version
 //TODO: Add tests to all components
-//TODO: Add move to seperate files
+//TODO: Add move to separate files
 //TODO: Add access token to API calls
-
 
 const Container = styled.div`
   display: flex;
@@ -40,7 +43,6 @@ const ExpensesList = styled.div`
   padding-right: 10px;
 `;
 
-
 const ExpenseRow = styled.div`
   display: flex;
   flex-direction: row;
@@ -53,28 +55,22 @@ const ExpenseRow = styled.div`
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 `;
 
-
 // TODO: add translations to Text constants
 const headerTitleText = "User Expenses";
 const headerDescriptionText = "Manage your expenses effectively.";
 
-
 const sortByIdAscText = "Sort by ID (Ascending)";
 const sortByIdDescText = "Sort by ID (Descending)";
-
 
 // TODO: add translations to error messages
 const fetchExpensesErrorText = "There was an error fetching the expenses!";
 const saveExpenseErrorText = "There was an error saving the expense!";
 
-
-  // TODO: add translations to toast notifications  
+// TODO: add translations to toast notifications  
 const minAmountAlertText = "Min Amount should be less than or equal to Max Amount."; // TODO: Change to toast notification
 const maxAmountAlertText = "Max Amount should be greater than or equal to Min Amount."; // TODO: Change to toast notification
 const startDateAlertText = "Start Date should be before End Date."; // TODO: Change to toast notification
 const endDateAlertText = "End Date should be after Start Date."; // TODO: Change to toast notification
-
-
 
 // TODO: SAME AS LOGIN VALIDATION (VISUAL PART)
 export const ExpensesPage: FC = () => {
@@ -85,7 +81,7 @@ export const ExpensesPage: FC = () => {
     maxAmount: '',
     startDate: '',
     endDate: '',
-    expenseTypeId: '',
+    expenseTypes: [] as { label: string; value: string }[],
   });
 
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -124,6 +120,16 @@ export const ExpensesPage: FC = () => {
 
   // TODO: refactor to use a custom hook, and multiple sort options
   // TODO: add option to clear filters
+  // TODO: switch views, build url, dyamic table.
+  // TODO: build views for table, which allows filtering to be done.
+  // TODO: add localizations, translations, and tests
+  // TODO: add pagination? 
+  // TODO: add sorting by all fields
+  // TODO: add supporting family members (same household)
+  // TODO: add supporting time period (monthly, yearly, custom)
+  // TODO: add supporting time formats, and time zones, and date formats
+  // TODO: add in reports and charts for expenses, prediction for future expenses
+  // TODO: add AI for predicting future expenses
   const sortedExpenses = [...expenses].sort((a, b) => {
     if (sortOrder === 'asc') {
       return a.id - b.id;
@@ -137,17 +143,18 @@ export const ExpensesPage: FC = () => {
     const expenseDate = new Date(expense.expenseDate);
     const startDate = filter.startDate ? new Date(filter.startDate) : null;
     const endDate = filter.endDate ? new Date(filter.endDate) : null;
-
+    const selectedExpenseTypeIds = filter.expenseTypes.map(type => parseInt(type.value));
+  
     return (
       (filter.title === '' || expense.title.toLowerCase().includes(filter.title.toLowerCase())) &&
       (filter.minAmount === '' || expense.amount >= parseFloat(filter.minAmount)) &&
       (filter.maxAmount === '' || expense.amount <= parseFloat(filter.maxAmount)) &&
       (startDate === null || expenseDate >= startDate) &&
       (endDate === null || expenseDate <= endDate) &&
-      (filter.expenseTypeId === '' || expense.expenseTypeId === parseInt(filter.expenseTypeId))
+      (filter.expenseTypes.length === 0 || filter.expenseTypes.filter(elem => elem.value === expense.expenseType?.name).length !== 0) 
     );
   });
-
+  
   // TODO: refactor to use a custom hook
   const handleAddExpense = () => {
     setIsEditMode(false);
@@ -203,6 +210,7 @@ export const ExpensesPage: FC = () => {
   const handleReturnToEditing = () => {
     setUnsavedChangesModalOpen(false);
   };
+
   // TODO: refactor to use a custom hook
   const handleSaveChanges = async (values: Expense) => {
     try {
@@ -220,6 +228,13 @@ export const ExpensesPage: FC = () => {
     }
   };
 
+  const handleExpenseTypeChange = (selectedOptions: MultiValue<{ label: string; value: string }>) => {
+    setFilter({
+      ...filter,
+      expenseTypes: selectedOptions as { label: string; value: string }[]
+    });
+  };
+
   return (
     <Container>
       <VerticalNavBar />
@@ -233,10 +248,15 @@ export const ExpensesPage: FC = () => {
             </IconButton>
           </Tooltip>
         </Header>
-        <ExpensesFilterBar filter={filter} onFilterChange={handleFilterChange} onAddExpense={handleAddExpense}/>
+        <ExpensesFilterBar
+          filter={filter}
+          onFilterChange={handleFilterChange}
+          onExpenseTypeChange={handleExpenseTypeChange}
+          onAddExpense={handleAddExpense}
+        />
         <ExpensesList>
-          {filteredExpenses.map((expense,index) => ( // TODO: move to a separate component, add delete button (modal), make header with horizontal line, make it 2X3 like grid with same height of every row 
-            <ExpenseRow key={index+1}>
+          {filteredExpenses.map((expense, index) => ( // TODO: move to a separate component, add delete button (modal), make header with horizontal line, make it 2X3 like grid with same height of every row 
+            <ExpenseRow key={index + 1}>
               <ExpenseCard expense={expense} onEdit={handleEditExpense}/>
             </ExpenseRow>
           ))}

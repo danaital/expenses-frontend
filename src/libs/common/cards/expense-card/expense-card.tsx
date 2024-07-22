@@ -10,7 +10,7 @@ interface ExpenseCardProps {
 
 const dateText = "Date";
 const paidToText = "Paid To";
-const expenseTypeIdText = "Expense Type ID";
+const expenseTypeIdText = "Expense Type";
 const idText = "ID";
 const amountText = "Amount";
 const descriptionText = "Description";
@@ -37,12 +37,12 @@ export const ExpenseCard: FC<ExpenseCardProps> = ({ expense, onEdit }) => {
           <EditIcon style={{ fontSize: '14px' }} />
         </IconButton>
       </ExpenseCardHeader>
-      <p><strong>{idText+":"}</strong>{expense.id}</p>
+      <p><strong>{idText+":"}</strong> {expense.id}</p>
       <p><strong>{amountText+":"}</strong> ${(+expense.amount).toFixed(2)}</p>
       <p><strong>{dateText+":"}</strong> {new Date(expense.expenseDate).toLocaleDateString()}</p>
       <p><strong>{paidToText+":"}</strong> {expense.paidTo}</p>
       <p><strong>{descriptionText+":"}</strong> {expense.description}</p>
-      <p><strong>{expenseTypeIdText+":"}</strong> {expense.expenseTypeId}</p>
+      <p><strong>{expenseTypeIdText+":"}</strong> {expense.expenseType?.name}</p>
     </ExpenseCardContainer>
   );
 };

@@ -1,6 +1,9 @@
-import React, { FC } from 'react';
-import { TextField, Button } from '@mui/material';
+import React, { FC, useState, useEffect } from 'react';
+import { TextField, Button, Tooltip } from '@mui/material';
 import styled from 'styled-components';
+import Select, { MultiValue, StylesConfig, components } from 'react-select';
+import axios from 'axios';
+import { ExpenseType } from '../../../shared/dtos/expense-type-dto';
 
 const FilterHeader = styled.div`
   background-color: #f0f0f0;
@@ -22,6 +25,7 @@ const AddExpenseButton = styled(Button)`
   && {
     background-color: #007bff;
     color: #fff;
+    height: 56px;
     &:hover {
       background-color: #0056b3;
     }
@@ -35,24 +39,77 @@ interface ExpensesFilterBarProps {
     maxAmount: string;
     startDate: string;
     endDate: string;
-    expenseTypeId: string;
+    expenseTypes: { label: string; value: string }[];
   };
   onFilterChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onExpenseTypeChange: (selectedOptions: MultiValue<{ label: string; value: string }>) => void;
   onAddExpense: () => void;
 }
+
 const filterText = "Filter by:";
 const titleLabelText = "Title";
 const minAmountLabelText = "Min Amount";
 const maxAmountLabelText = "Max Amount";
 const startDateLabelText = "Start Date";
 const endDateLabelText = "End Date";
-const expenseTypeIdLabelText = "Expense Type ID";
+const expenseTypeLabelText = "Expense Type";
 const addExpenseButtonText = "Add New Expense";
 
-  // TODO: add translations to toast notifications  
-const minAmountAlertText = "Min Amount should be less than or equal to Max Amount."; // TODO: Change to toast notification
-const startDateAlertText = "Start Date should be less than or equal to End Date."; // TODO: Change to toast notification
-export const ExpensesFilterBar: FC<ExpensesFilterBarProps> = ({ filter, onFilterChange, onAddExpense }) => {
+const customStyles: StylesConfig<{ label: string; value: string }, true> = {
+  control: (provided) => ({
+    ...provided,
+    height: '56px',
+    maxHeight: '56px',
+    backgroundColor: '#f0f0f0',
+    width: '300px',
+    maxWidth: '300px', // Add max-width
+    overflowY: 'auto', // Add overflowY : todo fix position of X and expand collapse button to center
+  }),
+  menuList: (provided) => ({
+    ...provided,
+    maxHeight: '150px', // Add max-height
+  }),
+};
+
+const MenuList = (props: any) => {
+  return (
+    <components.MenuList {...props}>
+      {props.children}
+    </components.MenuList>
+  );
+};
+
+export const ExpensesFilterBar: FC<ExpensesFilterBarProps> = ({ filter, onFilterChange, onExpenseTypeChange, onAddExpense }) => {
+  const [expenseTypeOptions, setExpenseTypeOptions] = useState<{ label: string; value: string }[]>([]);
+  // TODO: add reccuring expenses
+  // TODO: add payment method. description, date
+  // TODO: add payment status
+  // TODO: add expense status
+  // TODO: add alerts for overdue expenses, build escalation matrix
+  // TODO: add expense currency, exchange rate, amount in local currency, date of exchange rate
+  // TODO: make page, fliter bard, drawer generic, add filter for all fields, add sorting, add pagination
+  // TODO: make filter buttons to be added dynamically, and not show all the time 
+  useEffect(() => {
+    const fetchExpenseTypes = async () => {
+      try {
+        const response = await axios.get<ExpenseType[]>('http://localhost:3001/api/expenseTypes/getAll');
+        const options = response.data.map((expenseType) => ({
+          label: expenseType.name,
+          value: expenseType.name,
+        }));
+        setExpenseTypeOptions(options);
+      } catch (error) {
+        console.error('Error fetching expense types:', error);
+      }
+    };
+
+    fetchExpenseTypes();
+  }, []);
+
+  const selectedExpenseTypesTooltip = filter.expenseTypes.length !== 0 
+    ? filter.expenseTypes.map(ele => ele.label).join(', ') 
+    : "Select one or more expense types";
+
   return (
     <FilterHeader>
       <FilterField>
@@ -102,17 +159,21 @@ export const ExpensesFilterBar: FC<ExpensesFilterBarProps> = ({ filter, onFilter
             shrink: true,
           }}
         />
-        <TextField
-          label={expenseTypeIdLabelText}
-          variant="outlined"
-          type="number"
-          name="expenseTypeId" // TODO: make it the name of the expense type & colorize according to the type or change to icon for card
-          value={filter.expenseTypeId}
-          onChange={onFilterChange}
-        />
+        <Tooltip title={selectedExpenseTypesTooltip} arrow placement="top">
+          <div>
+            <Select
+              isMulti
+              options={expenseTypeOptions}
+              value={filter.expenseTypes}
+              onChange={onExpenseTypeChange}
+              styles={customStyles}
+              components={{ MenuList }}
+              placeholder={expenseTypeLabelText}
+            />
+          </div>
+        </Tooltip>
       </FilterField>
       <AddExpenseButton variant="contained" onClick={onAddExpense}>{addExpenseButtonText}</AddExpenseButton>   
     </FilterHeader>
-    
   );
 };
