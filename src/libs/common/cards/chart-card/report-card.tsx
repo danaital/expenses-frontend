@@ -35,6 +35,8 @@ const Content = styled.p`
 
 // Define the KanbanCard component
 export const KanbanCard: FC<KanbanCardProps> = ({ title, content }) => {
+  // TODO: Fix name
+  // TODO: Add capitalize
   return (
     <Card>
       <Title>{title}</Title>
