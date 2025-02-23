@@ -108,8 +108,10 @@ export const ExpensesFilterBar: FC<ExpensesFilterBarProps> = ({ filter, onFilter
 
   const selectedExpenseTypesTooltip = filter.expenseTypes.length !== 0 
     ? filter.expenseTypes.map(ele => ele.label).join(', ') 
-    : "Select one or more expense types";
+    : "Select one or more expense types"; // TODO: Move to translation section
 
+  // TODO: Use generic templates
+  // TODO: Use <> in 165
   return (
     <FilterHeader>
       <FilterField>
