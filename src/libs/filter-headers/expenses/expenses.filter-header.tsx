@@ -63,7 +63,7 @@ const customStyles: StylesConfig<{ label: string; value: string }, true> = {
     backgroundColor: '#f0f0f0',
     width: '300px',
     maxWidth: '300px', // Add max-width
-    overflowY: 'auto', // Add overflowY : todo fix position of X and expand collapse button to center
+    overflowY: 'auto', // Add overflowY. TODO: fix position of X and expand collapse button to center
   }),
   menuList: (provided) => ({
     ...provided,
